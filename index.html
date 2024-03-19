@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>No</title>
+</head>
+
+<body>
+    <h1 style="display: flex; justify-content: center;">WANT TO PLAY LEAGUE?</h1>
+    <div class="container">
+        <a id="Yes" href="index.html">Yes</a>
+        <a id="No" onmouseover="startAnimation()">No</a>
+    </div>
+</body>
+
+<script>
+    const noButton = document.querySelector('#No');
+
+    function startAnimation() {
+        var i = Math.floor(Math.random() * 500) + 1;
+        var j = Math.floor(Math.random() * 500) + 1;
+        animateButton(i, j);
+    }
+
+    function animateButton(targetX, targetY) {
+        var currentX = parseFloat(getComputedStyle(noButton).left);
+        var currentY = parseFloat(getComputedStyle(noButton).top);
+
+        var deltaX = targetX - currentX;
+        var deltaY = targetY - currentY;
+
+        var maxDistance = 150;
+        var minDistance = -150;
+
+        deltaX = Math.max(Math.min(deltaX, maxDistance), minDistance);
+        deltaY = Math.max(Math.min(deltaY, maxDistance), minDistance);
+
+        var frames = 10;
+        var interval = 10;
+
+        var stepX = deltaX / frames;
+        var stepY = deltaY / frames;
+
+        var frameCount = 0;
+
+        var animationInterval = setInterval(function() {
+            frameCount++;
+            currentX += stepX;
+            currentY += stepY;
+
+            noButton.style.left = currentX + 'px';
+            noButton.style.top = currentY + 'px';
+
+            if (frameCount >= frames) {
+                clearInterval(animationInterval);
+            }
+        }, interval);
+    }
+
+</script>
+
+<style>
+    .container {
+        display: flex;
+        justify-content: center;
+        position: relative;
+    }
+
+    #Yes,
+    #No {
+        margin: 10px;
+        padding: 10px;
+        padding-left: 25px;
+        padding-right: 25px;
+        color: black;
+        border-radius: 10px;
+        border: none;
+        position: absolute;
+        text-decoration: none;
+    }
+
+    #Yes {
+        background-color: Green;
+        padding-left: 20px;
+        left: 37.5%;
+        top: 50%;
+    }
+
+    #Yes:hover {
+        cursor: pointer;
+    }
+
+    #No {
+        background-color: red;
+        left: 57.5%;
+        top: 50%;
+    }
+</style>
+</html>
