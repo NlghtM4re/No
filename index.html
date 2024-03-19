@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Real-time Drawing App</title>
+	<style>
+		body {
+			margin: 0;
+			padding: 0;
+		}
+		canvas {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: white;
+		}
+	</style>
+	<script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-database.js"></script>
+	<script>
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-analytics.js";
+  
+		// Initialize Firebase
+		var firebaseConfig = {
+            apiKey: "AIzaSyCaj1Z31QXB-QMxxiFKH49OJxgu122Qmr0",
+            authDomain: "drawing-real-time-teste.firebaseapp.com",
+            projectId: "drawing-real-time-teste",
+            storageBucket: "drawing-real-time-teste.appspot.com",
+            messagingSenderId: "948224567095",
+            appId: "1:948224567095:web:0adda2cacaf804b2dfdcb2",
+            measurementId: "G-VLDFBVB6GB"
+		};
+		firebase.initializeApp(firebaseConfig);
+
+		// Create a reference to the database
+		var database = firebase.database();
+
+		// Create a canvas element and add it to the page
+		var canvas = document.createElement("canvas");
+		var ctx = canvas.getContext("2d");
+		document.body.appendChild(canvas);
+
+		// Set up the canvas
+		canvas.width = window.innerWidth;
+		canvas.height = window.innerHeight;
+		ctx.lineJoin = "round";
+		ctx.lineCap = "round";
+		ctx.lineWidth = 5;
+
+		// Set up a variable to keep track of whether the user is currently drawing
+		var isDrawing = false;
+
+		// Listen for mouse events on the canvas
+		canvas.addEventListener("mousedown", startDrawing);
+		canvas.addEventListener("mousemove", draw);
+		canvas.addEventListener("mouseup", stopDrawing);
+
+		// Set up a Firebase listener to update the canvas in real-time
+		database.ref("canvas").on("value", function(snapshot) {
+			var data = snapshot.val();
+			if (data) {
+				drawData(data);
+			}
+		});
+
+		// Function to start drawing
+		function startDrawing(e) {
+			isDrawing = true;
+			draw(e);
+		}
+
+		// Function to draw a line
+		function draw(e) {
+			if (!isDrawing) return;
+			ctx.beginPath();
+			ctx.moveTo(e.clientX, e.clientY);
+			ctx.lineTo(e.clientX + 1, e.clientY + 1);
+			ctx.stroke();
+			sendData(e.clientX, e.clientY);
+		}
+
+		// Function to stop drawing
+		function stopDrawing() {
+			isDrawing = false;
+		}
+
+		// Function to send drawing data to Firebase
+		function sendData(x, y) {
+			database.ref("canvas").set({
+				x: x,
+				y: y
+			});
+		}
+
+		// Function to draw data received from Firebase
+		function drawData(data) {
+			ctx.beginPath();
+			ctx.moveTo(data.x, data.y);
+			ctx.lineTo(data.x + 1, data.y + 1);
+			ctx.stroke();
+		}
+	</script>
+</head>
+<body>
+</body>
+</html>
